@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Camera, Clock, MapPin, Users, Send, CheckCircle, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -13,6 +14,26 @@ const benefits = [
   { icon: Users, label: "Creator Community", desc: "Join a growing network" },
 ];
 
+const deviceOptions = [
+  "iPhone 13",
+  "iPhone 13 Mini",
+  "iPhone 13 Pro",
+  "iPhone 13 Pro Max",
+  "iPhone 14",
+  "iPhone 14 Plus",
+  "iPhone 14 Pro",
+  "iPhone 14 Pro Max",
+  "iPhone 15",
+  "iPhone 15 Plus",
+  "iPhone 15 Pro",
+  "iPhone 15 Pro Max",
+  "iPhone 16",
+  "iPhone 16 Plus",
+  "iPhone 16 Pro",
+  "iPhone 16 Pro Max",
+  "iPhone 16e",
+];
+
 export default function BecomeShooter() {
   const [form, setForm] = useState({
     name: "",
@@ -20,9 +41,12 @@ export default function BecomeShooter() {
     phone: "",
     portfolio_link: "",
     experience_years: "",
+    city: "",
+    device_type: "",
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,8 +54,12 @@ export default function BecomeShooter() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.phone || !form.portfolio_link || !form.experience_years) {
+    if (!form.name || !form.email || !form.phone || !form.portfolio_link || !form.experience_years || !form.city || !form.device_type) {
       toast.error("Please fill in all fields");
+      return;
+    }
+    if (!agreed) {
+      toast.error("Please agree to the Terms of Service and Privacy Policy");
       return;
     }
     setLoading(true);
@@ -75,7 +103,6 @@ export default function BecomeShooter() {
               and content near you.
             </p>
 
-            {/* Requirements */}
             <div className="mb-10">
               <h3
                 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-4"
@@ -99,13 +126,9 @@ export default function BecomeShooter() {
               </ul>
             </div>
 
-            {/* Benefits */}
             <div className="grid grid-cols-2 gap-4">
               {benefits.map((b, i) => (
-                <div
-                  key={i}
-                  className="glass-card p-4 flex items-start gap-3"
-                >
+                <div key={i} className="glass-card p-4 flex items-start gap-3">
                   <div className="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
                     <b.icon size={16} className="text-emerald-400" />
                   </div>
@@ -165,9 +188,7 @@ export default function BecomeShooter() {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">
-                    Name
-                  </label>
+                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">Name</label>
                   <input
                     data-testid="shooter-name-input"
                     type="text"
@@ -180,9 +201,7 @@ export default function BecomeShooter() {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">
-                    Email
-                  </label>
+                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">Email</label>
                   <input
                     data-testid="shooter-email-input"
                     type="email"
@@ -195,9 +214,7 @@ export default function BecomeShooter() {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">
-                    Phone Number
-                  </label>
+                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">Phone Number</label>
                   <input
                     data-testid="shooter-phone-input"
                     type="tel"
@@ -210,9 +227,20 @@ export default function BecomeShooter() {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">
-                    Portfolio Link
-                  </label>
+                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">City</label>
+                  <input
+                    data-testid="shooter-city-input"
+                    type="text"
+                    name="city"
+                    value={form.city}
+                    onChange={handleChange}
+                    placeholder="Your city"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500/50 transition-colors duration-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">Portfolio Link</label>
                   <input
                     data-testid="shooter-portfolio-input"
                     type="url"
@@ -225,9 +253,23 @@ export default function BecomeShooter() {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">
-                    Years of Experience
-                  </label>
+                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">Device Type</label>
+                  <select
+                    data-testid="shooter-device-select"
+                    name="device_type"
+                    value={form.device_type}
+                    onChange={handleChange}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500/50 transition-colors duration-200 appearance-none"
+                  >
+                    <option value="" className="bg-zinc-900">Select your iPhone model</option>
+                    {deviceOptions.map((d) => (
+                      <option key={d} value={d} className="bg-zinc-900">{d}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-zinc-500 uppercase tracking-wider mb-2 font-medium">Years of Experience</label>
                   <select
                     data-testid="shooter-experience-select"
                     name="experience_years"
@@ -242,6 +284,30 @@ export default function BecomeShooter() {
                     <option value="5+" className="bg-zinc-900">5+ years</option>
                   </select>
                 </div>
+
+                {/* Terms checkbox */}
+                <label
+                  data-testid="shooter-terms-checkbox-label"
+                  className="flex items-start gap-3 cursor-pointer pt-1"
+                >
+                  <input
+                    data-testid="shooter-terms-checkbox"
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-white/20 bg-white/5 text-violet-500 focus:ring-violet-500/50 cursor-pointer accent-violet-500"
+                  />
+                  <span className="text-xs text-zinc-400 text-left leading-relaxed">
+                    I agree to the{" "}
+                    <Link to="/terms" className="text-violet-400 hover:text-violet-300 underline transition-colors">
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link to="/privacy" className="text-violet-400 hover:text-violet-300 underline transition-colors">
+                      Privacy Policy
+                    </Link>
+                  </span>
+                </label>
 
                 <button
                   data-testid="shooter-submit-btn"

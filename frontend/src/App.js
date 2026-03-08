@@ -12,6 +12,8 @@ import PricingPage from "@/pages/PricingPage";
 import CitiesPage from "@/pages/CitiesPage";
 import BecomeShooterPage from "@/pages/BecomeShooterPage";
 import WaitlistPage from "@/pages/WaitlistPage";
+import TermsPage from "@/pages/TermsPage";
+import NotFoundPage from "@/pages/NotFoundPage";
 import PrivacyPolicy from "@/components/landing/PrivacyPolicy";
 
 function AppShell() {
@@ -69,6 +71,8 @@ function AppShell() {
         <Route path="/become-shooter" element={<BecomeShooterPage />} />
         <Route path="/join" element={<WaitlistPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </>

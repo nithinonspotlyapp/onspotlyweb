@@ -84,6 +84,8 @@ class ShooterApplication(BaseModel):
     phone: str
     portfolio_link: str
     experience_years: str
+    city: str
+    device_type: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -93,6 +95,8 @@ class ShooterApplicationCreate(BaseModel):
     phone: str
     portfolio_link: str
     experience_years: str
+    city: str
+    device_type: str
 
 
 class WaitlistCount(BaseModel):
@@ -150,6 +154,8 @@ async def create_shooter_application(app_input: ShooterApplicationCreate):
             "Phone Number": application.phone,
             "Portfolio Link (Website / Instagram / YouTube / TikTok)": application.portfolio_link,
             "Years of Experience in iPhone Videography": application.experience_years,
+            "City": application.city,
+            "Device Type": application.device_type,
         }
     ))
 
