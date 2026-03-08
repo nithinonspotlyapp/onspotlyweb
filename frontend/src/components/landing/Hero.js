@@ -105,11 +105,11 @@ export default function Hero() {
       <div className="absolute inset-0 hero-glow pointer-events-none" />
       <div className="absolute inset-0 hero-glow-secondary pointer-events-none" />
 
-      <div className="absolute top-32 right-[10%] w-20 h-20 rounded-2xl bg-violet-500/5 border border-violet-500/10 animate-float hidden lg:block" />
-      <div className="absolute top-[60%] left-[5%] w-14 h-14 rounded-full bg-pink-500/5 border border-pink-500/10 animate-float-slow hidden lg:block" />
+      <div className="absolute top-32 right-[10%] w-20 h-20 rounded-2xl bg-violet-500/5 border border-violet-500/10 animate-float hidden md:block" />
+      <div className="absolute top-[60%] left-[5%] w-14 h-14 rounded-full bg-pink-500/5 border border-pink-500/10 animate-float-slow hidden md:block" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 w-full relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           {/* Left - Content */}
           <div>
             {/* Badge */}
@@ -231,7 +231,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="order-first lg:order-last"
+            className="order-first md:order-last"
           >
             <NearbyCreatorsMap />
           </motion.div>
