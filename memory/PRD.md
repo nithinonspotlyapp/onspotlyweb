@@ -28,18 +28,19 @@ Build Onspotly landing page - an Uber-style real-time creator booking platform w
 - Privacy policy page
 - Smooth scroll navigation, animations, mobile responsive
 
-## What's Been Implemented (Dec 2025)
+## What's Been Implemented (Dec 2025 - Mar 2026)
 - Multi-page architecture with dedicated routes: /, /how-it-works, /features, /pricing, /cities, /become-shooter, /join, /privacy
 - Custom reel-scrolling page transition (phone mockup with scrolling reels, TikTok/Reels style)
 - Backend API: POST /api/waitlist, GET /api/waitlist/count, POST /api/shooter-apply
-- All forms functional with MongoDB persistence
+- All forms functional with MongoDB persistence + Airtable sync
+- Airtable integration: Waitlist (Name, Email, City) and Shooter (Name, Email, Phone Number, Portfolio Link, Experience) both fully working
 - Dark glassmorphism design with gradient accents
 - Framer Motion scroll animations throughout
 - Mobile responsive with hamburger menu
 - Active nav state highlighting for current page
 - "Continue Exploring" nav at bottom of each page
 - SVG US Map with animated city markers
-- All tests passing (100% backend, 100% frontend)
+- All tests passing (100% backend, 100% frontend) - verified Mar 2026
 
 ## Prioritized Backlog
 ### P0 (Launch Blockers) - DONE
