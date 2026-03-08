@@ -1,23 +1,24 @@
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Check, Star } from "lucide-react";
+import { Check, Star, Tag } from "lucide-react";
 
 const packages = [
   {
     name: "1 Hour Shoot",
-    price: "$49",
+    price: "$X9",
     reels: "1 Edited Reel Delivered",
     popular: false,
   },
   {
     name: "3 Hour Shoot",
-    price: "$129",
+    price: "$XX9",
     reels: "2 Edited Reels Delivered",
     popular: true,
   },
   {
     name: "5 Hour Shoot",
-    price: "$199",
+    price: "$XX9",
     reels: "3 Edited Reels Delivered",
     popular: false,
   },
@@ -29,6 +30,64 @@ const included = [
   "Trained & Certified Shooters",
   "Onspotly Branding Included",
 ];
+
+const scrambleChars = "$0123456789X";
+
+function PriceReveal({ price, delay = 0 }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [display, setDisplay] = useState("$???");
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (!isInView) return;
+    const startDelay = setTimeout(() => {
+      let tick = 0;
+      const maxTicks = 12;
+      const interval = setInterval(() => {
+        tick++;
+        if (tick >= maxTicks) {
+          clearInterval(interval);
+          setDisplay(price);
+          setRevealed(true);
+          return;
+        }
+        const randomPrice = Array.from({ length: price.length }, (_, i) => {
+          if (i === 0) return "$";
+          return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+        }).join("");
+        setDisplay(randomPrice);
+      }, 70);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(startDelay);
+  }, [isInView, price, delay]);
+
+  return (
+    <div ref={ref} className="flex items-center gap-3">
+      <div className="relative">
+        <motion.span
+          className={`text-4xl font-bold block transition-colors duration-300 ${
+            revealed ? "text-white" : "text-zinc-500"
+          }`}
+          animate={revealed ? { scale: [1, 1.08, 1] } : {}}
+          transition={{ duration: 0.3 }}
+        >
+          {display}
+        </motion.span>
+      </div>
+      {revealed && (
+        <motion.div
+          initial={{ scale: 0, rotate: -20 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", stiffness: 400, damping: 15 }}
+        >
+          <Tag size={18} className="text-violet-400" />
+        </motion.div>
+      )}
+    </div>
+  );
+}
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -88,14 +147,12 @@ export default function Pricing() {
 
               <div className="mb-8">
                 <h3
-                  className="text-lg font-semibold text-white mb-2"
+                  className="text-lg font-semibold text-white mb-3"
                   style={{ fontFamily: "Manrope, sans-serif" }}
                 >
                   {pkg.name}
                 </h3>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-white">{pkg.price}</span>
-                </div>
+                <PriceReveal price={pkg.price} delay={200 + i * 300} />
               </div>
 
               <div className="border-t border-white/5 pt-6 mb-8">
@@ -128,22 +185,26 @@ export default function Pricing() {
                     : "bg-white/5 text-white border border-white/10 hover:bg-white/10"
                 }`}
               >
-                Book on App (Launching Soon)
+                Book Instantly
               </button>
             </motion.div>
           ))}
         </div>
 
-        {/* More packages note */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+        {/* Highlighted "More packages" note */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center text-sm text-zinc-500 mt-10"
+          className="mt-12 flex justify-center"
         >
-          More packages and custom pricing coming soon.
-        </motion.p>
+          <div className="glass-card-glow px-8 py-4 text-center">
+            <p className="text-sm md:text-base font-semibold gradient-text">
+              More packages and custom pricing coming soon.
+            </p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

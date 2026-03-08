@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
+  { label: "Home", path: "/" },
   { label: "How It Works", path: "/how-it-works" },
   { label: "Features", path: "/features" },
   { label: "Pricing", path: "/pricing" },

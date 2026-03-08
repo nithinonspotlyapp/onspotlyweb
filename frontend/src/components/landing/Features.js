@@ -129,8 +129,32 @@ export default function Features() {
           </p>
         </motion.div>
 
+        {/* Before / After header labels */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-16 mb-8"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl">
+            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/[0.02] border border-white/5">
+              <div className="w-2 h-2 rounded-full bg-zinc-600" />
+              <span className="text-sm font-bold uppercase tracking-widest text-zinc-500" style={{ fontFamily: "Manrope, sans-serif" }}>
+                Before Onspotly
+              </span>
+            </div>
+            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-violet-500/[0.06] border border-violet-500/20">
+              <div className="w-2 h-2 rounded-full bg-violet-500" />
+              <span className="text-sm font-bold uppercase tracking-widest gradient-text" style={{ fontFamily: "Manrope, sans-serif" }}>
+                After Onspotly
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Feature comparisons */}
-        <div className="mt-16 space-y-12 md:space-y-16">
+        <div className="space-y-12 md:space-y-16">
           {features.map((feat, i) => (
             <motion.div
               key={i}

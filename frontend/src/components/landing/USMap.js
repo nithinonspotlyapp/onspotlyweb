@@ -13,8 +13,7 @@ const cities = [
 
 const stats = [
   { icon: MapPin, value: "5", label: "Launch Cities" },
-  { icon: Users, value: "100+", label: "Creators Joining" },
-  { icon: Globe, value: "2025", label: "Nationwide Network" },
+  { icon: Globe, value: "2026", label: "Nationwide Network" },
 ];
 
 const US_OUTLINE = "M 122 65 L 128 98 L 100 118 L 80 155 L 70 200 L 65 240 L 78 280 L 105 318 L 138 330 L 188 335 L 270 342 L 328 358 L 355 395 L 378 420 L 412 412 L 458 392 L 518 378 L 568 370 L 608 375 L 625 415 L 638 450 L 650 480 L 655 460 L 645 420 L 638 385 L 635 360 L 648 335 L 662 318 L 680 300 L 698 282 L 712 260 L 718 242 L 728 215 L 738 192 L 748 165 L 752 142 L 740 132 L 722 148 L 698 168 L 665 172 L 625 162 L 588 155 L 555 148 L 528 150 L 498 148 L 462 138 L 428 128 L 395 115 L 358 102 L 318 90 L 278 78 L 238 70 L 198 65 L 158 62 Z";
