@@ -118,7 +118,8 @@ async def create_waitlist_entry(entry_input: WaitlistCreate):
         AIRTABLE_WAITLIST_TABLE,
         {
             "Name": entry.name,
-            "Notes": f"Email: {entry.email}\nCity: {entry.city}\nSubmitted: {entry.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC')}",
+            "Email": entry.email,
+            "City": entry.city,
         }
     ))
 
@@ -145,7 +146,10 @@ async def create_shooter_application(app_input: ShooterApplicationCreate):
         AIRTABLE_SHOOTER_TABLE,
         {
             "Name": application.name,
-            "Notes": f"Email: {application.email}\nPhone: {application.phone}\nPortfolio: {application.portfolio_link}\nExperience: {application.experience_years}\nSubmitted: {application.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC')}",
+            "Email": application.email,
+            "Phone Number": application.phone,
+            "Portfolio Link (Website / Instagram / YouTube / TikTok)": application.portfolio_link,
+            "Years of Experience in iPhone Videography": application.experience_years,
         }
     ))
 
