@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import asyncio
-import json
+import requests as http_requests
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 import uuid
@@ -18,9 +18,13 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Google Sheets config
-WAITLIST_SHEET_ID = "1-ymXhT6yLTuL5LCpZ8LyYvVK5YbvrcEYnzokM600NC4"
-SHOOTER_SHEET_ID = "10UjXtPJXmI5VORLbgUCi4wm7Rcc8RaLRFxmA91GSRoo"
+# Airtable config
+AIRTABLE_WAITLIST_PAT = os.environ.get('AIRTABLE_WAITLIST_PAT')
+AIRTABLE_WAITLIST_BASE = os.environ.get('AIRTABLE_WAITLIST_BASE')
+AIRTABLE_WAITLIST_TABLE = os.environ.get('AIRTABLE_WAITLIST_TABLE')
+AIRTABLE_SHOOTER_PAT = os.environ.get('AIRTABLE_SHOOTER_PAT')
+AIRTABLE_SHOOTER_BASE = os.environ.get('AIRTABLE_SHOOTER_BASE')
+AIRTABLE_SHOOTER_TABLE = os.environ.get('AIRTABLE_SHOOTER_TABLE')
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -32,47 +36,29 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_gspread_client():
-    try:
-        import gspread
-        from google.oauth2.service_account import Credentials
-
-        creds_path = os.path.join(ROOT_DIR, 'google_credentials.json')
-        creds_json = os.environ.get('GOOGLE_CREDENTIALS_JSON')
-
-        if os.path.exists(creds_path):
-            creds = Credentials.from_service_account_file(
-                creds_path,
-                scopes=['https://www.googleapis.com/auth/spreadsheets']
-            )
-            return gspread.authorize(creds)
-        elif creds_json:
-            creds_dict = json.loads(creds_json)
-            creds = Credentials.from_service_account_info(
-                creds_dict,
-                scopes=['https://www.googleapis.com/auth/spreadsheets']
-            )
-            return gspread.authorize(creds)
-        else:
-            logger.info("No Google credentials found, sheet sync disabled")
-            return None
-    except Exception as e:
-        logger.error(f"Failed to init gspread: {e}")
-        return None
-
-
-async def append_to_sheet(sheet_id: str, values: list):
-    gc = get_gspread_client()
-    if not gc:
+async def append_to_airtable(pat: str, base_id: str, table_id: str, fields: dict):
+    if not pat or not base_id or not table_id:
+        logger.info("Airtable credentials missing, skipping sync")
         return
     try:
-        def _append():
-            sheet = gc.open_by_key(sheet_id).sheet1
-            sheet.append_row(values, value_input_option='USER_ENTERED')
-        await asyncio.to_thread(_append)
-        logger.info(f"Appended row to sheet {sheet_id}")
+        url = f"https://api.airtable.com/v0/{base_id}/{table_id}"
+        headers = {
+            "Authorization": f"Bearer {pat}",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "records": [{"fields": fields}],
+            "typecast": True
+        }
+        resp = await asyncio.to_thread(
+            http_requests.post, url, json=data, headers=headers, timeout=10
+        )
+        if resp.status_code == 200:
+            logger.info(f"Airtable record created in {base_id}/{table_id}")
+        else:
+            logger.error(f"Airtable error ({resp.status_code}): {resp.text}")
     except Exception as e:
-        logger.error(f"Failed to append to sheet {sheet_id}: {e}")
+        logger.error(f"Failed to sync to Airtable: {e}")
 
 
 class WaitlistEntry(BaseModel):
@@ -125,10 +111,15 @@ async def create_waitlist_entry(entry_input: WaitlistCreate):
     doc['timestamp'] = doc['timestamp'].isoformat()
     await db.waitlist.insert_one(doc)
 
-    # Append to Google Sheet
-    asyncio.create_task(append_to_sheet(
-        WAITLIST_SHEET_ID,
-        [entry.name, entry.email, entry.city, entry.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")]
+    # Sync to Airtable
+    asyncio.create_task(append_to_airtable(
+        AIRTABLE_WAITLIST_PAT,
+        AIRTABLE_WAITLIST_BASE,
+        AIRTABLE_WAITLIST_TABLE,
+        {
+            "Name": entry.name,
+            "Notes": f"Email: {entry.email}\nCity: {entry.city}\nSubmitted: {entry.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC')}",
+        }
     ))
 
     return entry
@@ -147,12 +138,15 @@ async def create_shooter_application(app_input: ShooterApplicationCreate):
     doc['timestamp'] = doc['timestamp'].isoformat()
     await db.shooter_applications.insert_one(doc)
 
-    # Append to Google Sheet
-    asyncio.create_task(append_to_sheet(
-        SHOOTER_SHEET_ID,
-        [application.name, application.email, application.phone,
-         application.portfolio_link, application.experience_years,
-         application.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")]
+    # Sync to Airtable
+    asyncio.create_task(append_to_airtable(
+        AIRTABLE_SHOOTER_PAT,
+        AIRTABLE_SHOOTER_BASE,
+        AIRTABLE_SHOOTER_TABLE,
+        {
+            "Name": application.name,
+            "Notes": f"Email: {application.email}\nPhone: {application.phone}\nPortfolio: {application.portfolio_link}\nExperience: {application.experience_years}\nSubmitted: {application.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC')}",
+        }
     ))
 
     return application
