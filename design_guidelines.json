@@ -1,0 +1,165 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Onspotly",
+      "persona": "The Uber for Creators - Premium, Dark, Fast, Tech-First",
+      "vibe": "Cyberpunk Luxury meets Silicon Valley Utility",
+      "theme": "dark"
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Space Grotesk, sans-serif",
+        "body": "DM Sans, sans-serif",
+        "code": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tight leading-[1.1]",
+        "h2": "text-4xl md:text-5xl font-bold tracking-tight",
+        "h3": "text-2xl md:text-3xl font-semibold tracking-normal",
+        "body_lg": "text-lg md:text-xl leading-relaxed text-zinc-300",
+        "body": "text-base leading-relaxed text-zinc-400",
+        "caption": "text-sm text-zinc-500 uppercase tracking-widest"
+      },
+      "imports": [
+        "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap"
+      ]
+    },
+    "colors": {
+      "palette": {
+        "background": {
+          "default": "#050505",
+          "surface": "#0A0A0A",
+          "surface_highlight": "#121212"
+        },
+        "primary": {
+          "main": "#7C3AED",
+          "hover": "#6D28D9",
+          "gradient_start": "#7C3AED",
+          "gradient_end": "#DB2777"
+        },
+        "secondary": {
+          "main": "#06B6D4",
+          "hover": "#0891B2"
+        },
+        "accent": {
+          "neon_pink": "#F472B6",
+          "neon_blue": "#22D3EE",
+          "neon_purple": "#A78BFA"
+        },
+        "text": {
+          "primary": "#FFFFFF",
+          "secondary": "#A1A1AA",
+          "muted": "#52525B"
+        },
+        "border": {
+          "default": "rgba(255, 255, 255, 0.1)",
+          "active": "rgba(255, 255, 255, 0.2)"
+        }
+      },
+      "utility_classes": {
+        "glass_panel": "bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2)]",
+        "glass_panel_hover": "hover:bg-white/10 hover:border-white/20 transition-all duration-300 ease-out",
+        "gradient_text": "bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400",
+        "gradient_border": "relative before:absolute before:inset-0 before:p-[1px] before:bg-gradient-to-r before:from-violet-500 before:to-fuchsia-500 before:-z-10 before:rounded-xl"
+      }
+    },
+    "visual_enhancers": {
+      "shadows": {
+        "glow": "0 0 20px rgba(124, 58, 237, 0.3)",
+        "card": "0 10px 40px -10px rgba(0,0,0,0.5)"
+      },
+      "border_radius": {
+        "card": "rounded-2xl",
+        "button": "rounded-full"
+      },
+      "gradients": {
+        "hero_glow": "radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15) 0%, rgba(5, 5, 5, 0) 70%)",
+        "surface_sheen": "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)"
+      }
+    },
+    "layout_strategies": {
+      "container": "max-w-7xl mx-auto px-6 md:px-12 lg:px-24",
+      "section_spacing": "py-24 md:py-32",
+      "grid_bento": "grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(200px,auto)]"
+    }
+  },
+  "component_registry": {
+    "Hero": {
+      "path": "src/components/landing/Hero.js",
+      "description": "Full-height interactive hero with animated map background and glass foreground content.",
+      "visuals": "Split layout or centered. Headline with gradient text. CTA buttons glowing.",
+      "dependencies": ["framer-motion", "lucide-react"]
+    },
+    "HowItWorks": {
+      "path": "src/components/landing/HowItWorks.js",
+      "description": "7-step vertical timeline or horizontal scroll workflow.",
+      "visuals": "Connecting lines that light up on scroll. Icons for each step (Book, Match, Shoot, Edit, etc.)."
+    },
+    "Audience": {
+      "path": "src/components/landing/Audience.js",
+      "description": "Who is Onspotly For? Grid of 3-4 distinct personas.",
+      "visuals": "Tilt-effect glass cards with persona images and value props."
+    },
+    "Pricing": {
+      "path": "src/components/landing/Pricing.js",
+      "description": "3 tier pricing cards. Center card 'Popular' highlighted.",
+      "visuals": "Center card has glowing border and slightly elevated scale."
+    },
+    "BecomeShooter": {
+      "path": "src/components/landing/BecomeShooter.js",
+      "description": "Application CTA section for creators.",
+      "visuals": "High-energy imagery (camera gear, backstage). Darker aesthetic."
+    },
+    "USMap": {
+      "path": "src/components/landing/USMap.js",
+      "description": "SVG interactive map of US launch cities.",
+      "visuals": "Dark map silhouette. Pulsing neon dots for cities (NYC, LA, Miami, Austin, Chicago). Tooltips on hover."
+    },
+    "Waitlist": {
+      "path": "src/components/landing/Waitlist.js",
+      "description": "Simple email capture form.",
+      "visuals": "Minimalist input field with 'Join' button. Success confetti."
+    },
+    "Footer": {
+      "path": "src/components/landing/Footer.js",
+      "description": "Standard footer with links and Privacy Policy.",
+      "visuals": "Very dark gray background. Subtle text."
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1765871403869-834ec1d50c9c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwzfHxjb3Jwb3JhdGUlMjBldmVudCUyMG5ldHdvcmtpbmclMjBwYXJ0eSUyMGJsdXJyZWQlMjBiYWNrZ3JvdW5kJTIwbmlnaHR8ZW58MHx8fHwxNzcyOTkwMTA0fDA&ixlib=rb-4.1.0&q=85",
+      "creator_photographer": "https://images.unsplash.com/photo-1616727836012-ff5c4efd8249?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHw0fHxwaG90b2dyYXBoZXIlMjBldmVudCUyMGZhc2hpb24lMjBydW53YXklMjBkYXJrJTIwbGlnaHRpbmd8ZW58MHx8fHwxNzcyOTkwMTAxfDA&ixlib=rb-4.1.0&q=85",
+      "creator_videographer": "https://images.unsplash.com/photo-1636336086126-be44ca922de9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODF8MHwxfHNlYXJjaHwzfHx2aWRlb2dyYXBoZXIlMjBmaWxtaW5nJTIwbXVzaWMlMjB2aWRlbyUyMG5lb258ZW58MHx8fHwxNzcyOTkwMTAyfDA&ixlib=rb-4.1.0&q=85",
+      "influencer_user": "https://images.unsplash.com/photo-1618580445896-660b83e2c6d5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwxfHxjb250ZW50JTIwY3JlYXRvciUyMGluZmx1ZW5jZXIlMjBzZWxmaWUlMjByaW5nJTIwbGlnaHQlMjB1cmJhbnxlbnwwfHx8fDE3NzI5OTAxMDN8MA&ixlib=rb-4.1.0&q=85",
+      "event_atmosphere": "https://images.unsplash.com/photo-1765619575342-8885ab6d87db?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjBldmVudCUyMG5ldHdvcmtpbmclMjBwYXJ0eSUyMGJsdXJyZWQlMjBiYWNrZ3JvdW5kJTIwbmlnaHR8ZW58MHx8fHwxNzcyOTkwMTA0fDA&ixlib=rb-4.1.0&q=85"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "preferred_set": ["Camera", "Video", "MapPin", "Calendar", "Star", "CheckCircle", "Zap", "Users"]
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. PRE-REQUISITE: Install framer-motion immediately: `npm install framer-motion clsx tailwind-merge`",
+    "2. SETUP: Update `tailwind.config.js` to include the custom colors and animations defined in this JSON.",
+    "3. GLOBAL CSS: Update `index.css` to set the dark background #050505 as default body background.",
+    "4. COMPONENTS: Build basic Shadcn UI components first (Button, Card, Input) but HEAVILY customize them with the `glass_panel` utility class.",
+    "5. MOCK DATA: Use the text from the problem statement for the 'How It Works' 7 steps.",
+    "6. MAP: Create a custom SVG map component. Do not use Google Maps API. Just a static SVG of USA with absolute positioned divs for city dots that animate.",
+    "7. FORMS: Ensure Waitlist and Shooter Application forms actually submit data to the FastAPI backend (mock the fetch call if backend isn't ready, but structure it properly).",
+    "8. RESPONSIVE: Always check mobile view. The glass cards should stack vertically on mobile with proper spacing (gap-6)."
+  ],
+  "universal_guidelines": [
+    "You tend to converge toward generic, 'on distribution' outputs. Avoid this.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur).",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms.",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; }.",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠 etc.",
+    "Every interaction needs micro-animations - hover states, transitions.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Subtle grain textures, noise overlays, custom cursors: separates good from extraordinary."
+  ]
+}
