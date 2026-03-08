@@ -27,7 +27,12 @@ function AppShell() {
 
       const switchTimer = setTimeout(() => {
         setDisplayLocation(location);
-        window.scrollTo({ top: 0 });
+        // Force scroll to top after React renders new route
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 50);
       }, 650);
 
       const hideTimer = setTimeout(() => {

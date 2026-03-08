@@ -97,7 +97,7 @@ export default function USMap() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative w-full max-w-3xl mx-auto mb-16"
+          className="relative w-full max-w-3xl mx-auto mb-12 sm:mb-16 px-2 sm:px-0"
         >
           <svg
             viewBox="0 0 820 540"
@@ -107,9 +107,9 @@ export default function USMap() {
             {/* Map outline */}
             <path
               d={US_OUTLINE}
-              fill="rgba(255,255,255,0.02)"
-              stroke="rgba(255,255,255,0.08)"
-              strokeWidth="1.5"
+              fill="rgba(255,255,255,0.03)"
+              stroke="rgba(255,255,255,0.12)"
+              strokeWidth="2"
               strokeLinejoin="round"
               className={mapDrawn ? "animate-draw-path" : ""}
               style={{
