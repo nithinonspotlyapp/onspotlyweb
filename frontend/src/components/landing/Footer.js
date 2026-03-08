@@ -1,0 +1,138 @@
+import { Link } from "react-router-dom";
+
+const scrollTo = (id) => {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+};
+
+const footerLinks = [
+  {
+    title: "Product",
+    links: [
+      { label: "How It Works", action: () => scrollTo("how-it-works") },
+      { label: "Features", action: () => scrollTo("features") },
+      { label: "Packages", action: () => scrollTo("pricing") },
+      { label: "Launch Cities", action: () => scrollTo("launch-cities") },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About Onspotly", action: () => scrollTo("hero") },
+      { label: "Become a Shooter", action: () => scrollTo("become-shooter") },
+      { label: "Join Waitlist", action: () => scrollTo("waitlist") },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+    ],
+  },
+];
+
+const socialLinks = [
+  { label: "Twitter", href: "#" },
+  { label: "Instagram", href: "#" },
+  { label: "TikTok", href: "#" },
+  { label: "LinkedIn", href: "#" },
+];
+
+export default function Footer() {
+  return (
+    <footer
+      data-testid="footer"
+      className="border-t border-white/5 py-16 md:py-20"
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 mb-16">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-1">
+            <button
+              data-testid="footer-logo"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="text-xl font-bold tracking-tight mb-4 block"
+              style={{ fontFamily: "Manrope, sans-serif" }}
+            >
+              <span className="text-white">on</span>
+              <span className="gradient-text-strong">spotly</span>
+            </button>
+            <p className="text-sm text-zinc-500 leading-relaxed max-w-xs mb-6">
+              The Uber-style platform for booking nearby content creators who
+              shoot, edit, and deliver reels within 30 minutes.
+            </p>
+            {/* Social */}
+            <div>
+              <p className="text-xs text-zinc-600 uppercase tracking-widest font-medium mb-3">
+                Follow Onspotly
+              </p>
+              <div className="flex gap-3">
+                {socialLinks.map((s) => (
+                  <a
+                    key={s.label}
+                    data-testid={`social-${s.label.toLowerCase()}`}
+                    href={s.href}
+                    className="text-xs text-zinc-500 hover:text-white transition-colors duration-200 px-2 py-1 rounded-md bg-white/5 border border-white/5 hover:border-white/10"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Link columns */}
+          {footerLinks.map((col) => (
+            <div key={col.title}>
+              <h4
+                className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-5"
+                style={{ fontFamily: "Manrope, sans-serif" }}
+              >
+                {col.title}
+              </h4>
+              <ul className="space-y-3">
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    {link.href ? (
+                      <Link
+                        to={link.href}
+                        data-testid={`footer-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                        className="text-sm text-zinc-500 hover:text-white transition-colors duration-200"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <button
+                        data-testid={`footer-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                        onClick={link.action}
+                        className="text-sm text-zinc-500 hover:text-white transition-colors duration-200"
+                      >
+                        {link.label}
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <p className="text-xs text-zinc-600">
+            &copy; {new Date().getFullYear()} Onspotly. All rights reserved.
+          </p>
+          <p className="text-xs text-zinc-600">
+            Contact:{" "}
+            <a
+              href="mailto:hello@onspotlyapp.com"
+              className="text-zinc-500 hover:text-white transition-colors duration-200"
+            >
+              hello@onspotlyapp.com
+            </a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
