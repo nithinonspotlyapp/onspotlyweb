@@ -1,32 +1,27 @@
-import { Link } from "react-router-dom";
-
-const scrollTo = (id) => {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-};
+import { useNavigate } from "react-router-dom";
 
 const footerLinks = [
   {
     title: "Product",
     links: [
-      { label: "How It Works", action: () => scrollTo("how-it-works") },
-      { label: "Features", action: () => scrollTo("features") },
-      { label: "Packages", action: () => scrollTo("pricing") },
-      { label: "Launch Cities", action: () => scrollTo("launch-cities") },
+      { label: "How It Works", path: "/how-it-works" },
+      { label: "Features", path: "/features" },
+      { label: "Packages", path: "/pricing" },
+      { label: "Launch Cities", path: "/cities" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Onspotly", action: () => scrollTo("hero") },
-      { label: "Become a Shooter", action: () => scrollTo("become-shooter") },
-      { label: "Join Waitlist", action: () => scrollTo("waitlist") },
+      { label: "About Onspotly", path: "/" },
+      { label: "Become a Shooter", path: "/become-shooter" },
+      { label: "Join Waitlist", path: "/join" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Privacy Policy", path: "/privacy" },
     ],
   },
 ];
@@ -39,6 +34,8 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const navigate = useNavigate();
+
   return (
     <footer
       data-testid="footer"
@@ -50,7 +47,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <button
               data-testid="footer-logo"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => navigate("/")}
               className="text-xl font-bold tracking-tight mb-4 block"
               style={{ fontFamily: "Manrope, sans-serif" }}
             >
@@ -61,7 +58,6 @@ export default function Footer() {
               The Uber-style platform for booking nearby content creators who
               shoot, edit, and deliver reels within 30 minutes.
             </p>
-            {/* Social */}
             <div>
               <p className="text-xs text-zinc-600 uppercase tracking-widest font-medium mb-3">
                 Follow Onspotly
@@ -93,23 +89,13 @@ export default function Footer() {
               <ul className="space-y-3">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    {link.href ? (
-                      <Link
-                        to={link.href}
-                        data-testid={`footer-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
-                        className="text-sm text-zinc-500 hover:text-white transition-colors duration-200"
-                      >
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <button
-                        data-testid={`footer-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
-                        onClick={link.action}
-                        className="text-sm text-zinc-500 hover:text-white transition-colors duration-200"
-                      >
-                        {link.label}
-                      </button>
-                    )}
+                    <button
+                      data-testid={`footer-link-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                      onClick={() => navigate(link.path)}
+                      className="text-sm text-zinc-500 hover:text-white transition-colors duration-200"
+                    >
+                      {link.label}
+                    </button>
                   </li>
                 ))}
               </ul>

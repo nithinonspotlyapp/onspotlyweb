@@ -1,12 +1,9 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Zap, MapPin, Camera, ArrowRight } from "lucide-react";
 
-const scrollTo = (id) => {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-};
-
 export default function Hero() {
+  const navigate = useNavigate();
   return (
     <section
       id="hero"
@@ -108,7 +105,7 @@ export default function Hero() {
           >
             <button
               data-testid="hero-join-waitlist-btn"
-              onClick={() => scrollTo("waitlist")}
+              onClick={() => navigate("/join")}
               className="btn-gradient text-white font-semibold px-8 py-3.5 rounded-full text-sm flex items-center justify-center gap-2 group"
             >
               Join Early Access Waitlist
@@ -119,7 +116,7 @@ export default function Hero() {
             </button>
             <button
               data-testid="hero-become-shooter-btn"
-              onClick={() => scrollTo("become-shooter")}
+              onClick={() => navigate("/become-shooter")}
               className="px-8 py-3.5 rounded-full text-sm font-semibold text-white border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-colors transition-[background-color] duration-200 flex items-center justify-center gap-2"
             >
               <Camera size={16} />

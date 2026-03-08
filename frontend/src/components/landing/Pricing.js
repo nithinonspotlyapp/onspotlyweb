@@ -1,10 +1,6 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Check, Star } from "lucide-react";
-
-const scrollTo = (id) => {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-};
 
 const packages = [
   {
@@ -35,6 +31,7 @@ const included = [
 ];
 
 export default function Pricing() {
+  const navigate = useNavigate();
   return (
     <section
       id="pricing"
@@ -124,7 +121,7 @@ export default function Pricing() {
 
               <button
                 data-testid={`pricing-book-btn-${i}`}
-                onClick={() => scrollTo("waitlist")}
+                onClick={() => navigate("/join")}
                 className={`w-full py-3 rounded-full text-sm font-semibold transition-colors transition-opacity duration-200 ${
                   pkg.popular
                     ? "btn-gradient text-white"
