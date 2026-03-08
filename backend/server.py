@@ -9,7 +9,9 @@ import requests as http_requests
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+EST = timezone(timedelta(hours=-5))
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -67,7 +69,7 @@ class WaitlistEntry(BaseModel):
     name: str
     email: str
     city: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(EST))
 
 
 class WaitlistCreate(BaseModel):
@@ -86,7 +88,7 @@ class ShooterApplication(BaseModel):
     experience_years: str
     city: str
     device_type: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(EST))
 
 
 class ShooterApplicationCreate(BaseModel):

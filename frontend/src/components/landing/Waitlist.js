@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle, Loader2, Users, Sparkles, Bell } from "lucide-react";
+import { ArrowRight, CheckCircle, Loader2, Sparkles, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -12,19 +12,6 @@ export default function Waitlist() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const res = await axios.get(`${API}/waitlist/count`);
-        setCount(res.data.count);
-      } catch (err) {
-        // silently fail
-      }
-    };
-    fetchCount();
-  }, [submitted]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -78,19 +65,9 @@ export default function Waitlist() {
               Get Early Access to the{" "}
               <span className="gradient-text">Onspotly App</span>
             </h2>
-            <p className="text-base text-zinc-400 leading-relaxed mb-4">
+            <p className="text-base text-zinc-400 leading-relaxed mb-8">
               Be the first to experience instant content creation when we launch.
             </p>
-
-            {count > 0 && (
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-400 mb-8">
-                <Users size={14} className="text-violet-400" />
-                <span>
-                  <span className="text-white font-semibold">{count}</span>{" "}
-                  people on the waitlist
-                </span>
-              </div>
-            )}
           </motion.div>
 
           <motion.div

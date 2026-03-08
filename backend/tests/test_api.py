@@ -146,17 +146,18 @@ class TestShooterApply:
         print("✅ Shooter application correctly rejects missing city/device_type")
 
     def test_shooter_apply_all_device_types(self):
-        """Test shooter application with different device types (iPhone 13-16e)"""
+        """Test shooter application with different device types (iPhone 13-17)"""
         device_options = [
             "iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max",
             "iPhone 14", "iPhone 14 Plus", "iPhone 14 Pro", "iPhone 14 Pro Max",
             "iPhone 15", "iPhone 15 Plus", "iPhone 15 Pro", "iPhone 15 Pro Max",
             "iPhone 16", "iPhone 16 Plus", "iPhone 16 Pro", "iPhone 16 Pro Max",
-            "iPhone 16e"
+            "iPhone 16e",
+            "iPhone 17", "iPhone 17 Air", "iPhone 17 Pro", "iPhone 17 Pro Max"
         ]
         
-        # Test a sample of device types to avoid too many API calls
-        sample_devices = ["iPhone 13", "iPhone 15 Pro Max", "iPhone 16e"]
+        # Test a sample of device types including iPhone 17 series
+        sample_devices = ["iPhone 13", "iPhone 15 Pro Max", "iPhone 16e", "iPhone 17", "iPhone 17 Pro Max"]
         
         for device in sample_devices:
             unique_email = f"TEST_device_{uuid.uuid4().hex[:8]}@example.com"
@@ -198,6 +199,28 @@ class TestShooterApply:
             data = response.json()
             assert data["experience_years"] == exp
             
+
+
+    def test_timestamp_est_timezone(self):
+        """Test that timestamp uses EST timezone (-05:00 offset)"""
+        unique_email = f"TEST_timezone_{uuid.uuid4().hex[:8]}@example.com"
+        payload = {
+            "name": "TEST Timezone User",
+            "email": unique_email,
+            "city": "Boston"
+        }
+        response = requests.post(f"{BASE_URL}/api/waitlist", json=payload)
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        data = response.json()
+        timestamp = data.get("timestamp", "")
+        
+        # Check that timestamp contains EST offset (-05:00)
+        assert "-05:00" in timestamp or "05:00" in timestamp, f"Timestamp should contain EST offset (-05:00), got: {timestamp}"
+        
+        print(f"✅ Timestamp uses EST timezone: {timestamp}")
+
         print("✅ All experience_years values accepted correctly")
 
 

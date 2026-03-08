@@ -21,6 +21,7 @@ const footerLinks = [
   {
     title: "Legal",
     links: [
+      { label: "Terms of Service", path: "/terms" },
       { label: "Privacy Policy", path: "/privacy" },
     ],
   },
@@ -111,10 +112,10 @@ export default function Footer() {
           <p className="text-xs text-zinc-600">
             Contact:{" "}
             <a
-              href="mailto:hello@onspotlyapp.com"
+              href="mailto:support@onspotlyapp.com"
               className="text-zinc-500 hover:text-white transition-colors duration-200"
             >
-              hello@onspotlyapp.com
+              support@onspotlyapp.com
             </a>
           </p>
         </div>

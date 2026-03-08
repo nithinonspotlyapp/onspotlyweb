@@ -137,19 +137,37 @@ export default function Features() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mt-16 mb-8"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl">
-            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/[0.02] border border-white/5">
-              <div className="w-2 h-2 rounded-full bg-zinc-600" />
-              <span className="text-sm font-bold uppercase tracking-widest text-zinc-500" style={{ fontFamily: "Manrope, sans-serif" }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-white/[0.02] border border-white/5"
+            >
+              <div className="w-2.5 h-2.5 rounded-full bg-zinc-500 animate-pulse" />
+              <span
+                className="text-base sm:text-lg font-extrabold uppercase tracking-widest text-zinc-400"
+                style={{ fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.15em" }}
+              >
                 Before Onspotly
               </span>
-            </div>
-            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-violet-500/[0.06] border border-violet-500/20">
-              <div className="w-2 h-2 rounded-full bg-violet-500" />
-              <span className="text-sm font-bold uppercase tracking-widest gradient-text" style={{ fontFamily: "Manrope, sans-serif" }}>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-violet-500/[0.06] border border-violet-500/20"
+            >
+              <div className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse" />
+              <span
+                className="text-base sm:text-lg font-extrabold uppercase tracking-widest gradient-text"
+                style={{ fontFamily: "Manrope, sans-serif", letterSpacing: "0.15em" }}
+              >
                 After Onspotly
               </span>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
