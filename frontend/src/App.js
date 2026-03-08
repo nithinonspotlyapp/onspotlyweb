@@ -25,23 +25,33 @@ function AppShell() {
       prevPath.current = location.pathname;
       setTransitioning(true);
 
+      // Lock body scroll during transition
+      document.body.style.overflow = 'hidden';
+
       const switchTimer = setTimeout(() => {
         setDisplayLocation(location);
-        // Force scroll to top after React renders new route
-        setTimeout(() => {
+        // Robust scroll-to-top: disable smooth scroll, force instant scroll
+        requestAnimationFrame(() => {
+          const html = document.documentElement;
+          html.style.scrollBehavior = 'auto';
           window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
+          html.scrollTop = 0;
           document.body.scrollTop = 0;
-        }, 50);
+          requestAnimationFrame(() => {
+            html.style.scrollBehavior = '';
+          });
+        });
       }, 650);
 
       const hideTimer = setTimeout(() => {
         setTransitioning(false);
-      }, 1050);
+        document.body.style.overflow = '';
+      }, 1100);
 
       return () => {
         clearTimeout(switchTimer);
         clearTimeout(hideTimer);
+        document.body.style.overflow = '';
       };
     }
   }, [location]);

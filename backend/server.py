@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import asyncio
+import json
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 import uuid
@@ -17,13 +18,9 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY')
-SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-NOTIFICATION_EMAIL = 'hello@onspotlyapp.com'
-
-if RESEND_API_KEY:
-    import resend
-    resend.api_key = RESEND_API_KEY
+# Google Sheets config
+WAITLIST_SHEET_ID = "1-ymXhT6yLTuL5LCpZ8LyYvVK5YbvrcEYnzokM600NC4"
+SHOOTER_SHEET_ID = "10UjXtPJXmI5VORLbgUCi4wm7Rcc8RaLRFxmA91GSRoo"
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -33,6 +30,49 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+
+def get_gspread_client():
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        creds_path = os.path.join(ROOT_DIR, 'google_credentials.json')
+        creds_json = os.environ.get('GOOGLE_CREDENTIALS_JSON')
+
+        if os.path.exists(creds_path):
+            creds = Credentials.from_service_account_file(
+                creds_path,
+                scopes=['https://www.googleapis.com/auth/spreadsheets']
+            )
+            return gspread.authorize(creds)
+        elif creds_json:
+            creds_dict = json.loads(creds_json)
+            creds = Credentials.from_service_account_info(
+                creds_dict,
+                scopes=['https://www.googleapis.com/auth/spreadsheets']
+            )
+            return gspread.authorize(creds)
+        else:
+            logger.info("No Google credentials found, sheet sync disabled")
+            return None
+    except Exception as e:
+        logger.error(f"Failed to init gspread: {e}")
+        return None
+
+
+async def append_to_sheet(sheet_id: str, values: list):
+    gc = get_gspread_client()
+    if not gc:
+        return
+    try:
+        def _append():
+            sheet = gc.open_by_key(sheet_id).sheet1
+            sheet.append_row(values, value_input_option='USER_ENTERED')
+        await asyncio.to_thread(_append)
+        logger.info(f"Appended row to sheet {sheet_id}")
+    except Exception as e:
+        logger.error(f"Failed to append to sheet {sheet_id}: {e}")
 
 
 class WaitlistEntry(BaseModel):
@@ -73,23 +113,6 @@ class WaitlistCount(BaseModel):
     count: int
 
 
-async def send_notification_email(subject: str, html_content: str):
-    if not RESEND_API_KEY:
-        logger.info("RESEND_API_KEY not set, skipping email notification")
-        return
-    try:
-        params = {
-            "from": SENDER_EMAIL,
-            "to": [NOTIFICATION_EMAIL],
-            "subject": subject,
-            "html": html_content,
-        }
-        result = await asyncio.to_thread(resend.Emails.send, params)
-        logger.info(f"Email sent: {result}")
-    except Exception as e:
-        logger.error(f"Failed to send email: {e}")
-
-
 @api_router.get("/")
 async def root():
     return {"message": "Onspotly API"}
@@ -102,20 +125,10 @@ async def create_waitlist_entry(entry_input: WaitlistCreate):
     doc['timestamp'] = doc['timestamp'].isoformat()
     await db.waitlist.insert_one(doc)
 
-    count = await db.waitlist.count_documents({})
-    asyncio.create_task(send_notification_email(
-        subject=f"New Waitlist Signup #{count} - {entry.name}",
-        html_content=f"""
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a; color: #ffffff; padding: 32px; border-radius: 16px;">
-            <h2 style="color: #A78BFA; margin-bottom: 24px;">New Waitlist Signup</h2>
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">Name</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">{entry.name}</td></tr>
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">Email</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">{entry.email}</td></tr>
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">City</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">{entry.city}</td></tr>
-            </table>
-            <p style="color: #52525b; font-size: 12px; margin-top: 24px;">Total waitlist: {count} people</p>
-        </div>
-        """
+    # Append to Google Sheet
+    asyncio.create_task(append_to_sheet(
+        WAITLIST_SHEET_ID,
+        [entry.name, entry.email, entry.city, entry.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")]
     ))
 
     return entry
@@ -134,20 +147,12 @@ async def create_shooter_application(app_input: ShooterApplicationCreate):
     doc['timestamp'] = doc['timestamp'].isoformat()
     await db.shooter_applications.insert_one(doc)
 
-    asyncio.create_task(send_notification_email(
-        subject=f"New Shooter Application - {application.name}",
-        html_content=f"""
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a; color: #ffffff; padding: 32px; border-radius: 16px;">
-            <h2 style="color: #F472B6; margin-bottom: 24px;">New Shooter Application</h2>
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">Name</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">{application.name}</td></tr>
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">Email</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">{application.email}</td></tr>
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">Phone</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">{application.phone}</td></tr>
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">Portfolio</td><td style="padding: 8px 0; color: #fff; font-weight: 600;"><a href="{application.portfolio_link}" style="color: #A78BFA;">{application.portfolio_link}</a></td></tr>
-                <tr><td style="padding: 8px 0; color: #a1a1aa;">Experience</td><td style="padding: 8px 0; color: #fff; font-weight: 600;">{application.experience_years} years</td></tr>
-            </table>
-        </div>
-        """
+    # Append to Google Sheet
+    asyncio.create_task(append_to_sheet(
+        SHOOTER_SHEET_ID,
+        [application.name, application.email, application.phone,
+         application.portfolio_link, application.experience_years,
+         application.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")]
     ))
 
     return application
