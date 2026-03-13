@@ -115,6 +115,7 @@ async def create_waitlist_entry(entry_input: WaitlistCreate):
     entry = WaitlistEntry(**entry_input.model_dump())
     doc = entry.model_dump()
     doc['timestamp'] = doc['timestamp'].isoformat()
+    doc['_id'] = doc['id']
     await db.waitlist.insert_one(doc)
 
     # Sync to Airtable
@@ -143,6 +144,7 @@ async def create_shooter_application(app_input: ShooterApplicationCreate):
     application = ShooterApplication(**app_input.model_dump())
     doc = application.model_dump()
     doc['timestamp'] = doc['timestamp'].isoformat()
+    doc['_id'] = doc['id']
     await db.shooter_applications.insert_one(doc)
 
     # Sync to Airtable
@@ -164,15 +166,15 @@ async def create_shooter_application(app_input: ShooterApplicationCreate):
     return application
 
 
-app.include_router(api_router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api_router)
 
 
 @app.on_event("shutdown")
