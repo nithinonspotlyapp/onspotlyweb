@@ -20,13 +20,8 @@ load_dotenv(ROOT_DIR / '.env')
 
 mongo_url = os.environ['MONGO_URL']
 
-# Python 3.14 on Render has SSL/TLS compatibility issues with MongoDB Atlas.
-# Use tlsInsecure to bypass certificate verification and TLS version mismatch.
-client = AsyncIOMotorClient(
-    mongo_url,
-    tls=True,
-    tlsInsecure=True,
-)
+# certifi provides CA certs for SSL connection to MongoDB Atlas
+client = AsyncIOMotorClient(mongo_url, tlsCAFile=certifi.where())
 db = client[os.environ['DB_NAME']]
 
 # Airtable config
