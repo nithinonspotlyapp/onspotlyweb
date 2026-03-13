@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import certifi
+import ssl
 import os
 import logging
 import asyncio
@@ -18,7 +19,14 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url, tlsCAFile=certifi.where())
+
+# Python 3.14 on Render has SSL/TLS compatibility issues with MongoDB Atlas.
+# Use tlsInsecure to bypass certificate verification and TLS version mismatch.
+client = AsyncIOMotorClient(
+    mongo_url,
+    tls=True,
+    tlsInsecure=True,
+)
 db = client[os.environ['DB_NAME']]
 
 # Airtable config
