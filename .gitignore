@@ -34,6 +34,8 @@ dist
 
 *token.json*
 *credentials.json*
+# Ignore environment files containing secrets
+backend/.env
 
 # Logs and debug files
 npm-debug.log*
